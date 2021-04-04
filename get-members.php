@@ -2,23 +2,18 @@
 
 include __DIR__.'/vendor/autoload.php';
 
-use Discord\Discord;
+$loop = React\EventLoop\Factory::create();
+$client = new React\Http\Browser($loop);
 
-$token = $argv[1];
-$guild_id = $argv[2];
+$token = "YOUR TOKEN HERE";
+$guild_id = "YOUR GUILD ID HERE";
 
-$discord = new Discord([
-	'token' => $token,
-    'loggerLevel' => 'WARNING',
-]);
+$url = "https://discord.com/api/guilds/{$guild_id}/members?limit=1000";
+$headers = array('Authorization' => "Bot {$token}");
 
-$discord->on('ready', function ($discord) {
-    global $guild_id;
-    $discord->guilds->fetch($guild_id)->done(function ($guild) {
-        $guild->members->freshen()->done(function ($members) {
-            echo json_encode($members);
-        });
-    });   
+$client->get($url, $headers)->then(function (Psr\Http\Message\ResponseInterface $response) {
+    header('Content-Type: application/json');
+    echo (string)$response->getBody();
 });
 
-$discord->run();
+$loop->run();
