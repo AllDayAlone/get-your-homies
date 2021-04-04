@@ -1,2 +1,3 @@
 # get-your-homies
-A script to fetch all users from your discord server
+
+A script to fetch all members of your discord server
